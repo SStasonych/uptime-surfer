@@ -4,9 +4,10 @@ from sqlalchemy import select
 
 from database import get_db
 from models.site import Site, SiteCheckLog
-from schemas.site import SiteCreate, SiteResponse
+from schemas.site import SiteCreate, SiteResponse, SiteCheckLogResponse
 
 router = APIRouter(prefix="/sites", tags=["Sites"])
+router_logs = APIRouter(prefix="/logs", tags=["Logs"])
 
 # 1: Добавление нового сайта в таблицу 'sites'
 @router.post("/", response_model=SiteResponse, status_code=status.HTTP_201_CREATED)
@@ -39,5 +40,12 @@ async def create_site(site_data: SiteCreate, db: AsyncSession = Depends(get_db))
 @router.get("/", response_model=list[SiteResponse])
 async def get_all_sites(db: AsyncSession = Depends(get_db)):
     query = select(Site).order_by(Site.created_at.desc())
+    result = await db.execute(query)
+    return result.scalars().all()
+
+
+@router_logs.get("/", response_model=list[SiteCheckLogResponse])
+async def get_all_logs(db: AsyncSession = Depends(get_db)):
+    query = select(SiteCheckLog)
     result = await db.execute(query)
     return result.scalars().all()

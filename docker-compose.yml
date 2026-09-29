@@ -25,6 +25,30 @@ services:
       - pgdata:/var/lib/postgresql
     restart: always
 
+#  celery_worker:
+#    build: .
+#    command: celery -A celery.celery_app worker --loglevel=info
+#    depends_on:
+#      - redis
+#      - postgres
+#    volumes:
+#      - .:/app
+#    environment:
+#      - DATABASE_URL=postgresql+asyncpg://stan:123456@postgres/mydb
+#      - REDIS_URL=redis://redis:6379/0
+#
+#  celery_beat:
+#    build: .
+#    command: celery -A celery.celery_app beat --loglevel=info
+#    depends_on:
+#      - redis
+#      #- postgres
+#    volumes:
+#      - .:/app
+#    environment:
+#      #- DATABASE_URL=postgresql+asyncpg://stan:123456@postgres/mydb
+#      - REDIS_URL=redis://redis:6379/0
+
 volumes:
   pgdata:
   redis_data:
